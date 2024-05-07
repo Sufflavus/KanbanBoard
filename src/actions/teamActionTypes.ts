@@ -1,0 +1,1 @@
+export const LOAD_ALL_TEAMS = 'LOAD_ALL_TEAMS';

@@ -1,0 +1,9 @@
+{
+    "app.title": "Kanban доска",
+    "language-selector.label": "Язык",
+    "language-selector.languages.en": "Английский",
+    "language-selector.languages.ru": "Русский",
+    "task.status.to-do": "Очередь",
+    "task.status.in-progress": "В работе",
+    "task.status.done": "Готово"
+}

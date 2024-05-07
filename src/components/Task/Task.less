@@ -1,0 +1,39 @@
+@import '../../common/common.less';
+
+.task {
+    border-radius: 5px;
+    box-sizing: border-box;
+    padding: @padding-vertical-default*2 @padding-horizontal-default*2;
+    background: @mui-palette-common-white;
+
+    .task__tags {
+        margin-bottom: @margin-vertical-default;
+    }
+
+    .task__tag_pink {
+        color: @mui-palette-pink-300;
+        border-color: @mui-palette-pink-300;
+        background-color: @mui-palette-pink-50;
+    }
+
+    .task__title {
+        font-size: @font-size-big;
+        font-weight: @font-weight-bolder;
+        margin-bottom: @margin-vertical-default;
+    }
+
+    .task__responsible-user {
+        margin-bottom: @margin-vertical-default;
+        color: @mui-palette-grey-400;
+    }
+
+    .task__responsible-user_avatar {
+        font-size: @font-size-medium;
+        border-radius: 2px;
+    }
+
+    .task__date {
+        font-size: @font-size-small;
+        color: @mui-palette-grey-500;
+    }
+}

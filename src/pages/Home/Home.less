@@ -1,0 +1,27 @@
+@import '/src/common/common.less';
+
+.home {
+    height: 100%;
+    padding: @padding-default;
+    box-sizing: border-box;
+
+    .header {
+        padding: @padding-vertical-default 0 @padding-vertical-default*2 0;
+
+        &:after {
+            clear: both;
+        }
+    }
+
+    .header__right-panel {
+        float: right;
+        width: auto;
+    }
+
+    .header__title {
+        width: auto;
+        overflow: hidden;
+        font-size: @font-size-h3;
+        padding-right: @padding-horizontal-default;
+    }
+}

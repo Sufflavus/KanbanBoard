@@ -1,0 +1,9 @@
+{
+    "app.title": "Kanban board",
+    "language-selector.label": "Language",
+    "language-selector.languages.en": "English",
+    "language-selector.languages.ru": "Russian",
+    "task.status.to-do": "To do",
+    "task.status.in-progress": "In progress",
+    "task.status.done": "Done"
+}

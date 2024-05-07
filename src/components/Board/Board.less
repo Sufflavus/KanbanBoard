@@ -1,0 +1,66 @@
+@import '../../common/common.less';
+
+@column-margin-right: 20px;
+@column-border-radius: 5px;
+@column-background: @mui-palette-blue-50;
+@element-padding-vertical: @padding-vertical-default*2;
+@element-padding-horizontal: @padding-horizontal-default*2;
+
+.board {
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-collapse: collapse;
+
+    tr {
+        height: 100%;
+        border: 0;
+        padding: 0;
+
+        >th {
+            height: 100%;
+            border: 0;
+            padding: 0;
+            border-right: @column-margin-right solid transparent;
+            font-weight: normal;
+            text-align: left;
+
+            >.board__header-content {
+                border-top-left-radius: @column-border-radius;
+                border-top-right-radius: @column-border-radius;
+                background-color: @column-background;
+                height: 100%;
+                box-sizing: border-box;
+                padding: @element-padding-vertical @element-padding-horizontal;
+                font-size: @font-size-h6;
+            }
+        }
+
+        >td {
+            width: 25%;
+            height: 100%;
+            border: 0;
+            padding: 0;
+            border-right: @column-margin-right solid transparent;
+            vertical-align: top;
+
+            >.board__column-content {
+                box-sizing: border-box;
+                height: 100%;
+                padding: 0 @element-padding-horizontal @element-padding-vertical @element-padding-horizontal;
+                border-bottom-left-radius: @column-border-radius;
+                border-bottom-right-radius: @column-border-radius;
+                background-color: @column-background;
+            }
+        }
+
+        >th:last-child,
+        >td:last-child {
+            border-right: 0;
+        }
+    }
+
+    .task {
+        margin-bottom: @padding-vertical-default*2;
+    }
+}

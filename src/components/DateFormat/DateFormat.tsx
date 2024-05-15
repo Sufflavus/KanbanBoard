@@ -1,8 +1,8 @@
-import dayjs from 'dayjs';
+import { formatDate } from '../../utils/locale.helper';
 
 type Props = {
     date: Date;
-    format?: string; // https://day.js.org/docs/en/display/format
+    format?: string; // https://momentjs.com/docs/#/displaying/
 } & typeof defaultProps;
 
 const defaultProps = {
@@ -11,7 +11,7 @@ const defaultProps = {
 
 const DateFormat = (props: Props) => {
     return (
-        <span className="date-format">{dayjs(props.date).format(props.format)}</span>
+        <span className="date-format">{formatDate(props.date, props.format)}</span>
     );
 };
 

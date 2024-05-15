@@ -46,7 +46,7 @@ const Home = () => {
         document.removeEventListener("resize", onWindowResize);
         }
     }, []);
-console.log("home")
+
     return (
         <div ref={rootRef} className="home">
             <div ref={headerRef} className="header">

@@ -17,7 +17,7 @@ export const SupportedLanguages: Language[] = [
     }
 ];
 
-export const DefaultLanguage = SupportedLanguages.find(language => language.isDefault)?.key || 'en';
+export const DefaultLanguageKey = SupportedLanguages.find(language => language.isDefault)?.key || 'en';
 
 export const I18nextResources = {
     en: {

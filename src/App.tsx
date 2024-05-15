@@ -1,10 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { localeSetup } from './utils/locale.helper';
 import Layout from './pages/Layout';
 import Home from './pages/Home/Home';
 import './App.less';
 
 const App = () => {
-    console.log("app");
+    localeSetup();
+
     return (
         <BrowserRouter>
             <Routes>

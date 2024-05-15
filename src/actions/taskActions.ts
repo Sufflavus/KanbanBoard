@@ -1,7 +1,8 @@
 import { Dispatch, UnknownAction } from 'redux';
 import { ADD_TASK, DELETE_TASK, LOAD_ALL_TASKS, UPDATE_TASK } from './taskActionTypes';
-import { DefaultTask, EntityStatus, Task } from '../models';
+import { EntityStatus, Task } from '../models';
 import { BaseAction } from './commonActions';
+import { FakeTasks } from './fakeData';
 
 export interface TaskAction extends BaseAction {
     payload: {
@@ -17,10 +18,7 @@ export const loadAllTasks = (dispatch: Dispatch<UnknownAction>) => {
     dispatch({
         type: LOAD_ALL_TASKS,
         status: EntityStatus.Succeeded,
-        result: [{
-            ...DefaultTask,
-            title: 'Donec fermentum velit vel lectus lobortis condimentum.'
-        }]
+        result: [...FakeTasks]
     } as LoadAllTasksAction);
 };
 

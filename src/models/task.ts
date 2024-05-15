@@ -1,5 +1,5 @@
 import { TaskStatus } from './taskStatus';
-import { getUuidv4 } from '../utils';
+import { getUuidv4 } from '../utils/utils';
 
 export interface Task {
     id: string;

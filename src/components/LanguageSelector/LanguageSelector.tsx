@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useTranslation } from "react-i18next";
-import dayjs from 'dayjs';
+import { setLocale } from '../../utils/locale.helper';
 import { Language, SupportedLanguages } from '../../models';
 import Button from '@mui/material/Button';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -16,8 +16,6 @@ const LanguageSelector = () => {
     const [t, i18n] = useTranslation('common');
     const selectedLanguage = i18n.language;
 
-    console.log(selectedLanguage)
-
     const onMenuButtonClick = (event: React.MouseEvent<HTMLElement>) => {
         setMenuAnchorEl(event.currentTarget);
     };
@@ -27,9 +25,8 @@ const LanguageSelector = () => {
     };
 
     const onLanguageSelected = (language: Language) => {
-        // todo: Existing dates are not updated. Find a better way to store and update locale info
         i18n.changeLanguage(language.key);
-        dayjs.locale(language.key);
+        setLocale(language.key);
         onMenuClose();
     };
 

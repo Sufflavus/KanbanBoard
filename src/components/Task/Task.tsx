@@ -1,10 +1,15 @@
+import { Task as TaskInfo } from '../../models';
 import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
 import { blue } from '@mui/material/colors';
 import { DateFormat } from '../../components';
 import './Task.less';
 
-const Task = () => { 
+type Props = { 
+    task: TaskInfo;
+};
+
+const Task = (props: Props) => { 
     return (
         <div className="task">
             <div className="task__tags">
@@ -16,7 +21,7 @@ const Task = () => {
                 />
             </div>
             <div className="task__title">
-                Donec fermentum velit vel lectus lobortis condimentum.
+                {props.task.title}
             </div>
             <div className="task__responsible-user">
                 <Avatar
@@ -33,7 +38,7 @@ const Task = () => {
                 </Avatar>
             </div>
             <div className="task__date">
-                <DateFormat date={new Date()} format="DD MMM YYYY"/>
+                { props.task.dueDate && <DateFormat date={props.task.dueDate} format="DD MMM YYYY"/> }
             </div>
         </div>
     )

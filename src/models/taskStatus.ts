@@ -9,3 +9,8 @@ export const TaskStatusNameKeyMap: {[key in TaskStatus]: string} = {
     [TaskStatus.InProgress]: 'task.status.in-progress',
     [TaskStatus.Done]: 'task.status.done'
 };
+
+export const TaskStatusIds: TaskStatus[] = Object.keys(TaskStatus)
+    .map(key => +key)
+    .filter(key => !!key)
+    .map(key => key as TaskStatus);

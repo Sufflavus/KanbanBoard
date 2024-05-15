@@ -1,5 +1,6 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 module.exports = {
     entry: './src/index.tsx',
@@ -33,6 +34,9 @@ module.exports = {
     },
     mode: 'development',
     plugins: [
-        new HtmlWebpackPlugin({ template: './public/index.html' })
+        new HtmlWebpackPlugin({ template: './public/index.html' }),
+        new MomentLocalesPlugin({
+            localesToKeep: ['en', 'ru'],
+        }),
     ]
   };

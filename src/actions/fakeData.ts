@@ -1,52 +1,14 @@
-import { DefaultTask, DefaultTeam, DefaultUser, Task, TaskStatus, Team, User } from '../models';
+import { DefaultTask, Task, TaskStatus, Team, User } from '../models';
 import { getUuidv4 } from '../utils/utils';
 
-const team1: Team = { 
-    ...DefaultTeam, 
-    id: getUuidv4(), 
-    name: 'Design' 
-};
+const team1 = new Team('Design');
+const team2 = new Team('Development');
+const team3 = new Team('Test');
 
-const team2: Team = { 
-    ...DefaultTeam, 
-    id: getUuidv4(), 
-    name: 'Development' 
-};
-
-const team3: Team = { 
-    ...DefaultTeam, 
-    id: getUuidv4(), 
-    name: 'Test' 
-};
-
-
-const user1: User = { 
-    ...DefaultUser, 
-    id: getUuidv4(), 
-    firstName: 'John', 
-    lastName: 'Albaugh' 
-};
-
-const user2: User = { 
-    ...DefaultUser, 
-    id: getUuidv4(), 
-    firstName: 'Lori', 
-    lastName: 'Towne' 
-};
-
-const user3: User = { 
-    ...DefaultUser, 
-    id: getUuidv4(), 
-    firstName: 'Tatum', 
-    lastName: 'Reichel' 
-};
-
-const user4: User = { 
-    ...DefaultUser, 
-    id: getUuidv4(), 
-    firstName: 'Robert', 
-    lastName: 'Becker' 
-};
+const user1 = new User('John', 'Albaugh');
+const user2 = new User('Lori', 'Towne');
+const user3 = new User('Tatum', 'Reichel');
+const user4 = new User('Robert', 'Becker');
 
 const date1: Date = new Date();
 date1.setDate(date1.getDate() - 3);
@@ -66,9 +28,9 @@ const task1: Task = {
     statusId: TaskStatus.Done,
     index: 0,
     title: 'Nulla vestibulum mauris at laoreet interdum',
-    userId: user1.id,
-    teamId: team1.id,
-    dueDate: date1
+    //userId: user1.id,
+    //teamId: team1.id,
+    //dueDate: date1
 };
 
 const task2: Task = {

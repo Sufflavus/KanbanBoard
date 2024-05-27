@@ -5,5 +5,7 @@
     "language-selector.languages.ru": "Russian",
     "task.status.to-do": "To do",
     "task.status.in-progress": "In progress",
-    "task.status.done": "Done"
+    "task.status.done": "Done",
+    "team.name.unknown": "Unknown",
+    "user.name.unknown": "Unknown"
 }

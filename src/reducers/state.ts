@@ -26,17 +26,17 @@ export const taskInitialState: TaskState = {
     entities: []
 };
 
-export const userInitialState: TaskState = {
+export const userInitialState: UserState = {
     status: EntityStatus.Init,
     entities: []
 };
 
-export const teamInitialState: TaskState = {
+export const teamInitialState: TeamState = {
     status: EntityStatus.Init,
     entities: []
 };
 
-export const boardInitialState: BoardState = {
+/*export const boardInitialState: BoardState = {
     tasks: {
         status: EntityStatus.Init,
         entities: []
@@ -49,4 +49,4 @@ export const boardInitialState: BoardState = {
         status: EntityStatus.Init,
         entities: []
     }
-}
+}*/

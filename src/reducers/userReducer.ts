@@ -1,12 +1,13 @@
-import { BaseAction, LOAD_ALL_USERS } from '../actions';
+import { LoadAllUsersAction, LOAD_ALL_USERS } from '../actions';
 import { userInitialState } from './state';
 
-const userReducer = (state = userInitialState, action: BaseAction) => {
+const userReducer = (state = userInitialState, action: LoadAllUsersAction) => {
     switch (action.type) {
         case LOAD_ALL_USERS:
             return {
                 ...state,
-                users: [] // TODO
+                status: action.status,
+                entities: (action as LoadAllUsersAction).result || state.entities
             };
     }
 

@@ -1,6 +1,11 @@
 import common_en from "../translations/en/common.json";
 import common_ru from "../translations/ru/common.json";
 
+const LanguageKeys = {
+    en: 'en',
+    ru: 'ru'
+};
+
 export interface Language {
     key: string;
     isDefault: boolean;
@@ -8,16 +13,16 @@ export interface Language {
 
 export const SupportedLanguages: Language[] = [
     { 
-        key: 'en',
+        key: LanguageKeys.en,
         isDefault: true,
     },
     {
-        key: 'ru',
+        key: LanguageKeys.ru,
         isDefault: false
     }
 ];
 
-export const DefaultLanguageKey = SupportedLanguages.find(language => language.isDefault)?.key || 'en';
+export const DefaultLanguageKey = SupportedLanguages.find(language => language.isDefault)?.key || LanguageKeys.en;
 
 export const I18nextResources = {
     en: {

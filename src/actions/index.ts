@@ -4,6 +4,8 @@ export * from './teamActionTypes';
 
 export type { BaseAction } from './commonActions';
 export type { LoadAllTasksAction, TaskAction } from './taskActions';
+export type { LoadAllTeamsAction } from './teamActions';
+export type { LoadAllUsersAction } from './userActions';
 
 export { addTask, deleteTask, loadAllTasks, updateTask } from './taskActions';
 export { loadAllUsers } from './userActions';

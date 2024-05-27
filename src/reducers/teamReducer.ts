@@ -1,12 +1,13 @@
-import { BaseAction, LOAD_ALL_TEAMS } from '../actions';
-import { teamInitialState } from './state';
+import { LoadAllTeamsAction, LOAD_ALL_TEAMS } from '../actions';
+import { TeamState, teamInitialState } from './state';
 
-const teamReducer = (state = teamInitialState, action: BaseAction) => {
+const teamReducer = (state: TeamState = teamInitialState, action: LoadAllTeamsAction) => {
     switch (action.type) {
         case LOAD_ALL_TEAMS:
             return {
                 ...state,
-                teams: [] // TODO
+                status: action.status,
+                entities: (action as LoadAllTeamsAction).result || state.entities
             };
     }
 

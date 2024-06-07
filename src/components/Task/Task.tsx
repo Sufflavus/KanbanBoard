@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { MouseEvent, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { loadAllTeams, loadAllUsers } from '../../actions';
@@ -14,9 +14,17 @@ import './Task.less';
 
 type Props = { 
     task: TaskInfo;
+    dragging?: boolean;
+    top?: number;
+    left?: number;
+    width?: number;
+    onMouseDown?: (event: MouseEvent<HTMLElement>, taskId: string, taskWidth: number, taskHeight: number) => void;
+    onMouseUp?: () => void;
 };
 
 const Task = (props: Props) => { 
+    const taskElementRef = useRef(null);
+
     const dispatch = useDispatch();
     const {t} = useTranslation("common");
 
@@ -36,6 +44,25 @@ const Task = (props: Props) => {
         }
     }, [teamsStatus, usersStatus]);
 
+    const onMouseDown = (event: MouseEvent<HTMLElement>) => {
+        if(!taskElementRef || props.dragging) {
+          return;
+        }
+    
+        event.preventDefault(); // fix: mouseup does not fire after mousemove
+
+        if(props.onMouseDown) {
+            const element = taskElementRef.current! as HTMLElement;
+            props.onMouseDown(event, props.task.id, element.clientWidth, element.clientHeight);
+        }
+    }
+
+    const onMouseUp = (_event: MouseEvent<HTMLElement>) => {
+        if(props.onMouseUp) {
+            props.onMouseUp();
+        }
+    }
+
     const renderTags = () => {
         if(!props.task.teamId) {
             return null;
@@ -46,7 +73,7 @@ const Task = (props: Props) => {
                 {renderTeam()}
             </div>
         );
-    }
+    };
 
     const renderTeam = () => {
         if(!props.task.teamId) {
@@ -109,10 +136,22 @@ const Task = (props: Props) => {
                 </Tooltip>
             </div>
         );
-    }
+    };
 
     return (
-        <div className="task">
+        <div
+            ref={taskElementRef}
+            className={`task ${props.dragging ? 'dragging' : ''}`}
+            style={
+                props.dragging ? {
+                    top: `${props.top || 0}px`,
+                    left: `${props.left || 0}px`,
+                    width: `${props.width || 0}px`
+                } : undefined
+            }
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
+        >
             {renderTags()}
             <div className="task__title">
                 {props.task.title}

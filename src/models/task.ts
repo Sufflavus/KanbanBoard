@@ -1,7 +1,7 @@
 import { TaskStatus } from './taskStatus';
 import { getUuidv4 } from '../utils/utils';
 
-export interface Task {
+export interface ITask {
     id: string;
     statusId: TaskStatus;
     index: number;
@@ -12,7 +12,7 @@ export interface Task {
     dueDate?: Date;
 }
 
-export const DefaultTask: Task = {
+export const DefaultTask: ITask = {
     id: getUuidv4(),
     statusId: TaskStatus.ToDo,
     index: 0,

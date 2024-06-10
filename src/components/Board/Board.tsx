@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
-import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from 'react-redux';
-import { loadAllTasks } from '../../actions';
+import React, { createRef } from 'react';
+import { withTranslation, WithTranslation } from "react-i18next";
+import { connect, ConnectedProps } from 'react-redux';
+import { loadAllTasks, TaskActionsProps } from '../../actions';
 import { TaskState } from '../../reducers/state';
+import { AppDispatch, RootState } from '../../store';
 import { EntityStatus, TaskStatusIds, TaskStatusNameKeyMap } from '../../models';
 import { Task } from '../../components';
 import './Board.less';
@@ -10,11 +11,9 @@ import './Board.less';
 interface IDragProps {
     dragging: boolean;
     draggableTaskId: string;
-    draggableTaskWidth: number;
+    draggableElement: HTMLElement | null;
     dragOffsetInsideTaskElementTop: number;
     dragOffsetInsideTaskElementLeft: number;
-    draggableTaskElementRelativeTop: number;
-    draggableTaskElementRelativeLeft: number;
     minTaskElementRelativeTop: number;
     minTaskElementRelativeLeft: number;
     maxTaskElementRelativeTop: number;
@@ -24,168 +23,199 @@ interface IDragProps {
 const defaultDragProps: IDragProps = {
     dragging: false,
     draggableTaskId: '',
-    draggableTaskWidth: 0,
+    draggableElement: null,
     dragOffsetInsideTaskElementTop: 0,
     dragOffsetInsideTaskElementLeft: 0,
-    draggableTaskElementRelativeTop: 0,
-    draggableTaskElementRelativeLeft: 0,
     minTaskElementRelativeTop: 0,
     minTaskElementRelativeLeft: 0,
     maxTaskElementRelativeTop: 0,
     maxTaskElementRelativeLeft: 0
 };
 
-const Board = () => {
-    const boardElementRef = useRef(null);
+interface TasksProps {
+    tasks: TaskState
+};
 
-    const dispatch = useDispatch();
-    const {t} = useTranslation("common");
+interface OwnProps {};
 
-    const tasks = useSelector(state => ((state as any).tasks as TaskState)).entities;
-    const tasksStatus = useSelector(state => ((state as any).tasks as TaskState)).status;
+type Props = PropsFromRedux & WithTranslation & OwnProps;
 
-    const [dragProps, setDragProps] = useState<IDragProps>(defaultDragProps);
+interface State {
+    dragProps: IDragProps;
+}
 
-    //useSelector(state => { console.log(state); })
+class Board extends React.Component<Props, State> {
+    _boardElementRef: React.RefObject<HTMLTableSectionElement> | null = null;
 
-    useEffect(() => {
-        if(tasksStatus === EntityStatus.Init) {
-            loadAllTasks(dispatch);
+    constructor(props: Props) {
+        super(props);
+        this._boardElementRef = createRef<HTMLTableSectionElement>();
+        this.state = { dragProps: { ...defaultDragProps } };
+     }
+
+    componentDidMount() {
+        if(this.props.tasks.status === EntityStatus.Init) {
+            this.props.loadAllTasks(this.props.dispatch);
         }
-    }, [tasksStatus]);
+    }
 
-    const onTaskMouseDown = (event: React.MouseEvent<HTMLElement>, taskId: string, taskWidth: number, taskHeight: number) => {
-        if(!boardElementRef) {
+    componentWillUnmount() {
+        document.removeEventListener("mousemove", this._updateTaskPosition);
+    }
+
+    _onTaskMouseDown = (event: React.MouseEvent<HTMLElement>, taskId: string, element: HTMLElement, taskWidth: number, taskHeight: number) => {
+        if(!this._boardElementRef) {
             return;
         }
 
-        const parentElement = boardElementRef.current! as HTMLElement;
+        const parentElement = this._boardElementRef.current! as HTMLElement;
         const parentRect = parentElement.getBoundingClientRect();
 
         const taskElement = event.target as HTMLElement;
         const taskRect = taskElement.getBoundingClientRect();
 
-        setDragProps({
-            ...dragProps,
-            dragging: true,
-            draggableTaskId: taskId,
-            draggableTaskWidth: taskWidth,
-            dragOffsetInsideTaskElementTop: event.clientY - taskRect.top,
-            dragOffsetInsideTaskElementLeft: event.clientX - taskRect.left,
-            draggableTaskElementRelativeTop: taskRect.top - parentRect.top,
-            draggableTaskElementRelativeLeft: taskRect.left - parentRect.left,
-            minTaskElementRelativeTop: 0,
-            minTaskElementRelativeLeft: 20,
-            maxTaskElementRelativeTop: parentRect.height - taskHeight - 20,
-            maxTaskElementRelativeLeft: parentRect.width - taskWidth - 20
+        this.setState({
+            dragProps: { 
+                ...this.state.dragProps,
+                dragging: true,
+                draggableTaskId: taskId,
+                draggableElement: element,
+                dragOffsetInsideTaskElementTop: event.clientY - taskRect.top,
+                dragOffsetInsideTaskElementLeft: event.clientX - taskRect.left,
+                minTaskElementRelativeTop: 0,
+                minTaskElementRelativeLeft: 20,
+                maxTaskElementRelativeTop: parentRect.height - taskHeight - 20,
+                maxTaskElementRelativeLeft: parentRect.width - taskWidth - 20
+            }
         });
 
-        document.addEventListener("mousemove", updateTaskPosition);
+        element.style.width = `${element.clientWidth}px`;
+        document.addEventListener("mousemove", this._updateTaskPosition);
     }
 
-    const updateTaskPosition = (event: MouseEvent) => {
-        if(!dragProps.dragging) {
-            stopTaskDragging();
+    _updateTaskPosition = (event: MouseEvent) => {
+        if(!this.state.dragProps.dragging || !this.state.dragProps.draggableElement) {
+            this._stopTaskDragging();
             return;
         }
 
-        if(!boardElementRef) {
+        if(!this._boardElementRef) {
             return;
         }
 
-        const parentElement = boardElementRef.current! as HTMLElement;
+        const parentElement = this._boardElementRef.current! as HTMLElement;
         const parentRect = parentElement.getBoundingClientRect();
-    
-        setDragProps({
-            ...dragProps,
-            draggableTaskElementRelativeLeft: getNewElementX(event.x, parentRect),
-            draggableTaskElementRelativeTop: getNewElementY(event.y, parentRect)
-        });
+        const element = this.state.dragProps.draggableElement!;
+
+        element.style.left = this._getNewElementX(event.x, parentRect) +'px';
+        element.style.top = this._getNewElementY(event.y, parentRect) +'px';
     }
 
-    const getNewElementX = (mouseX: number, parentRect: DOMRect) : number => {
-        const newElementLeft = mouseX - parentRect.left - dragProps.dragOffsetInsideTaskElementLeft;
+    _getNewElementX = (mouseX: number, parentRect: DOMRect) : number => {
+        const newElementLeft = mouseX - parentRect.left - this.state.dragProps.dragOffsetInsideTaskElementLeft;
     
-        if(newElementLeft < dragProps.minTaskElementRelativeLeft) {
-          return dragProps.minTaskElementRelativeLeft;
+        if(newElementLeft < this.state.dragProps.minTaskElementRelativeLeft) {
+          return this.state.dragProps.minTaskElementRelativeLeft;
         }
         
-        if(newElementLeft > dragProps.maxTaskElementRelativeLeft) {
-          return dragProps.maxTaskElementRelativeLeft;
+        if(newElementLeft > this.state.dragProps.maxTaskElementRelativeLeft) {
+          return this.state.dragProps.maxTaskElementRelativeLeft;
         }
         
         return newElementLeft;
     }
       
-    const getNewElementY = (mouseY: number, parentRect: DOMRect): number => {
-        const newElementTop = mouseY - parentRect.top - dragProps.dragOffsetInsideTaskElementTop;
+    _getNewElementY = (mouseY: number, parentRect: DOMRect): number => {
+        const newElementTop = mouseY - parentRect.top - this.state.dragProps.dragOffsetInsideTaskElementTop;
         
-        if(newElementTop < dragProps.minTaskElementRelativeTop) {
-          return dragProps.minTaskElementRelativeTop;
+        if(newElementTop < this.state.dragProps.minTaskElementRelativeTop) {
+          return this.state.dragProps.minTaskElementRelativeTop;
         }
         
-        if(newElementTop > dragProps.maxTaskElementRelativeTop) {
-          return dragProps.maxTaskElementRelativeTop;
+        if(newElementTop > this.state.dragProps.maxTaskElementRelativeTop) {
+          return this.state.dragProps.maxTaskElementRelativeTop;
         }
         
         return newElementTop;
     }
 
-    const stopTaskDragging = () => {
-        setDragProps(defaultDragProps);
-        document.removeEventListener("mousemove", updateTaskPosition);
+    _stopTaskDragging = () => {
+        const element = this.state.dragProps.draggableElement;
+
+        if(element) {
+            element.style.width = '';
+            element.style.left = '';
+            element.style.top = '';
+        }
+
+        this.setState({ dragProps: { ...defaultDragProps } });
+        document.removeEventListener("mousemove", this._updateTaskPosition);
     }
 
-    const onTaskMouseUp = () => {
-        console.log("onTaskMouseUp")
-        stopTaskDragging();
+    _onTaskMouseUp = () => {
+        this._stopTaskDragging();
     }
-    
-    return (
-        <table className="board">
-            <thead>
-                <tr>
-                    {
-                        TaskStatusIds.map(statusId => (
-                            <th key={statusId}>
-                                <div className="board__header-content">
-                                    {t(TaskStatusNameKeyMap[statusId])}
-                                </div>
-                            </th>
-                        ))
-                    }
-                </tr>
-            </thead>
-            <tbody ref={boardElementRef}>
-                <tr>
-                    {
-                        TaskStatusIds.map(statusId => (
-                            <td key={statusId}>
-                                <div className="board__column-content">
-                                    {
-                                        tasks
-                                            .filter(task => task.statusId === statusId)
-                                            .map((task, _, __, dragging = dragProps.dragging && dragProps.draggableTaskId === task.id) => 
-                                                <Task 
-                                                    key={task.id} 
-                                                    task={task} 
-                                                    dragging={dragging}
-                                                    top={dragging ? dragProps.draggableTaskElementRelativeTop : undefined}
-                                                    left={dragging ? dragProps.draggableTaskElementRelativeLeft : undefined}
-                                                    width={dragging ? dragProps.draggableTaskWidth : undefined}
-                                                    onMouseDown={onTaskMouseDown} 
-                                                    onMouseUp={onTaskMouseUp}
-                                                />
-                                            )
-                                    }
-                                </div>
-                            </td>
-                        ))
-                    }
-                </tr>
-            </tbody>
-        </table>
-    );
-};
 
-export default Board;
+    render() {
+        console.log(this.props)
+        const { t } = this.props;
+        const tasks = this.props.tasks.entities;
+
+        return (
+            <table className="board">
+                <thead>
+                    <tr>
+                        {
+                            TaskStatusIds.map(statusId => (
+                                <th key={statusId}>
+                                    <div className="board__header-content">
+                                        {t(TaskStatusNameKeyMap[statusId])}
+                                    </div>
+                                </th>
+                            ))
+                        }
+                    </tr>
+                </thead>
+                <tbody ref={this._boardElementRef}>
+                    <tr>
+                        {
+                            TaskStatusIds.map(statusId => (
+                                <td key={statusId}>
+                                    <div className="board__column-content">
+                                        {
+                                            tasks
+                                                .filter(task => task.statusId === statusId)
+                                                .map((task, _, __, dragging = this.state.dragProps.dragging && this.state.dragProps.draggableTaskId === task.id) => 
+                                                    <Task 
+                                                        key={task.id} 
+                                                        task={task} 
+                                                        dragging={dragging}
+                                                        onMouseDown={this._onTaskMouseDown} 
+                                                        onMouseUp={this._onTaskMouseUp}
+                                                    />
+                                                )
+                                        }
+                                    </div>
+                                </td>
+                            ))
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        );
+    }
+}
+
+const mapStateToProps = (state: RootState): TasksProps => ({
+    tasks: state.tasks
+});
+
+const mapDispatchToProps = (dispatch: AppDispatch): TaskActionsProps => ({ 
+    loadAllTasks,
+    dispatch
+});
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+type PropsFromRedux = ConnectedProps<typeof connector>;
+
+export default withTranslation('common')(connector(Board));

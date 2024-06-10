@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from "react-i18next";
 import { setLocale } from '../../utils/locale.helper';
-import { Language, SupportedLanguages } from '../../models';
+import { ILanguage, SupportedLanguages } from '../../models';
 import Button from '@mui/material/Button';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import Menu from '@mui/material/Menu';
@@ -24,7 +24,7 @@ const LanguageSelector = () => {
         setMenuAnchorEl(null);
     };
 
-    const onLanguageSelected = (language: Language) => {
+    const onLanguageSelected = (language: ILanguage) => {
         i18n.changeLanguage(language.key);
         setLocale(language.key);
         onMenuClose();
@@ -59,7 +59,7 @@ const LanguageSelector = () => {
                 onClose={onMenuClose}
             >
                 {
-                    SupportedLanguages.map((language: Language) =>
+                    SupportedLanguages.map((language: ILanguage) =>
                         <MenuItem 
                             key={language.key}
                             selected={language.key === selectedLanguage}

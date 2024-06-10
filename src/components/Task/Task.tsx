@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { loadAllTeams, loadAllUsers } from '../../actions';
 import { TeamState, UserState } from '../../reducers/state';
-import { EntityStatus, Task as TaskInfo, Team, User } from '../../models';
+import { EntityStatus, ITask, Team, User } from '../../models';
 import Chip from '@mui/material/Chip';
 import Tooltip from "@mui/material/Tooltip";
 import Avatar from '@mui/material/Avatar';
@@ -13,12 +13,9 @@ import { DateFormat } from '../../components';
 import './Task.less';
 
 type Props = { 
-    task: TaskInfo;
+    task: ITask;
     dragging?: boolean;
-    top?: number;
-    left?: number;
-    width?: number;
-    onMouseDown?: (event: MouseEvent<HTMLElement>, taskId: string, taskWidth: number, taskHeight: number) => void;
+    onMouseDown?: (event: MouseEvent<HTMLElement>, taskId: string, element: HTMLElement, taskWidth: number, taskHeight: number) => void;
     onMouseUp?: () => void;
 };
 
@@ -53,7 +50,7 @@ const Task = (props: Props) => {
 
         if(props.onMouseDown) {
             const element = taskElementRef.current! as HTMLElement;
-            props.onMouseDown(event, props.task.id, element.clientWidth, element.clientHeight);
+            props.onMouseDown(event, props.task.id, element, element.clientWidth, element.clientHeight);
         }
     }
 
@@ -142,13 +139,6 @@ const Task = (props: Props) => {
         <div
             ref={taskElementRef}
             className={`task ${props.dragging ? 'dragging' : ''}`}
-            style={
-                props.dragging ? {
-                    top: `${props.top || 0}px`,
-                    left: `${props.left || 0}px`,
-                    width: `${props.width || 0}px`
-                } : undefined
-            }
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
         >

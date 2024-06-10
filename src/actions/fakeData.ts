@@ -1,4 +1,4 @@
-import { DefaultTask, Task, TaskStatus, Team, User } from '../models';
+import { DefaultTask, ITask, TaskStatus, Team, User } from '../models';
 import { getUuidv4 } from '../utils/utils';
 
 const team1 = new Team('Design');
@@ -22,7 +22,7 @@ date3.setDate(date3.getDate() + 7);
 const date4: Date = new Date();
 date4.setDate(date4.getDate() + 12);
 
-const task1: Task = {
+const task1: ITask = {
     ...DefaultTask,
     id: getUuidv4(),
     statusId: TaskStatus.Done,
@@ -33,7 +33,7 @@ const task1: Task = {
     //dueDate: date1
 };
 
-const task2: Task = {
+const task2: ITask = {
     ...DefaultTask,
     id: getUuidv4(),
     statusId: TaskStatus.InProgress,
@@ -44,7 +44,7 @@ const task2: Task = {
     dueDate: date2
 };
 
-const task3: Task = {
+const task3: ITask = {
     ...DefaultTask,
     id: getUuidv4(),
     statusId: TaskStatus.InProgress,
@@ -55,7 +55,7 @@ const task3: Task = {
     dueDate: date3
 };
 
-const task4: Task = {
+const task4: ITask = {
     ...DefaultTask,
     id: getUuidv4(),
     statusId: TaskStatus.ToDo,
@@ -68,4 +68,4 @@ const task4: Task = {
 
 export const FakeTeams: Team[] = [team1, team2, team3];
 export const FakeUsers: User[] = [user1, user2, user3, user4];
-export const FakeTasks: Task[] = [task1, task2, task3, task4];
+export const FakeTasks: ITask[] = [task1, task2, task3, task4];

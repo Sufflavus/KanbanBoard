@@ -1,20 +1,25 @@
 import { Dispatch, UnknownAction } from 'redux';
 import { ADD_TASK, DELETE_TASK, LOAD_ALL_TASKS, UPDATE_TASK } from './taskActionTypes';
-import { EntityStatus, Task } from '../models';
+import { EntityStatus, ITask } from '../models';
 import { BaseAction } from './commonActions';
 import { FakeTasks } from './fakeData';
 
 export interface TaskAction extends BaseAction {
     payload: {
-        task: Task;
+        task: ITask;
     }
 }
 
 export interface LoadAllTasksAction extends BaseAction {
-    result: Task[];
+    result: ITask[];
 }
 
-export const loadAllTasks = (dispatch: Dispatch<UnknownAction>) => {
+export interface TaskActionsProps {
+    dispatch: Dispatch<UnknownAction>,
+    loadAllTasks: (dispatch: Dispatch<UnknownAction>) => void
+}
+
+export const loadAllTasks = (dispatch: Dispatch<UnknownAction>): void => {
     dispatch({
         type: LOAD_ALL_TASKS,
         status: EntityStatus.Succeeded,
@@ -22,7 +27,7 @@ export const loadAllTasks = (dispatch: Dispatch<UnknownAction>) => {
     } as LoadAllTasksAction);
 };
 
-export const addTask = (value: Task) => {
+export const addTask = (value: ITask) => {
     return {
         type: ADD_TASK,
         payload: {
@@ -31,7 +36,7 @@ export const addTask = (value: Task) => {
     } as TaskAction;
 };
 
-export const updateTask = (value: Task) => {
+export const updateTask = (value: ITask) => {
     return {
         type: UPDATE_TASK,
         payload: {
@@ -40,7 +45,7 @@ export const updateTask = (value: Task) => {
     } as TaskAction;
 };
 
-export const deleteTask = (value: Task) => {
+export const deleteTask = (value: ITask) => {
     return {
         type: DELETE_TASK,
         payload: {

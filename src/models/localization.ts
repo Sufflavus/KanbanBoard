@@ -6,12 +6,12 @@ const LanguageKeys = {
     ru: 'ru'
 };
 
-export interface Language {
+export interface ILanguage {
     key: string;
     isDefault: boolean;
 }
 
-export const SupportedLanguages: Language[] = [
+export const SupportedLanguages: ILanguage[] = [
     { 
         key: LanguageKeys.en,
         isDefault: true,

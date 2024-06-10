@@ -3,7 +3,7 @@ export * from './userActionTypes';
 export * from './teamActionTypes';
 
 export type { BaseAction } from './commonActions';
-export type { LoadAllTasksAction, TaskAction } from './taskActions';
+export type { LoadAllTasksAction, TaskAction, TaskActionsProps } from './taskActions';
 export type { LoadAllTeamsAction } from './teamActions';
 export type { LoadAllUsersAction } from './userActions';
 

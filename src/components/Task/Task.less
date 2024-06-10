@@ -6,10 +6,12 @@
     padding: @padding-vertical-default*2 @padding-horizontal-default*2;
     background: @mui-palette-common-white;
     cursor: grab;
+    z-index: 10;
 
     &.dragging {
         cursor: grabbing;
         position: absolute;
+        z-index: 20;
     }
 
     .task__tags {

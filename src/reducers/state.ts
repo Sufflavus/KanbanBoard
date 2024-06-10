@@ -1,8 +1,8 @@
-import { EntityStatus, Task, Team, User } from '../models';
+import { EntityStatus, ITask, Team, User } from '../models';
 
 export interface TaskState {
     status: EntityStatus;
-    entities: Task[];
+    entities: ITask[];
 }
 
 export interface UserState {

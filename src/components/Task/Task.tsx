@@ -15,7 +15,7 @@ import './Task.less';
 type Props = { 
     task: ITask;
     dragging?: boolean;
-    onMouseDown?: (event: MouseEvent<HTMLElement>, taskId: string, element: HTMLElement, taskWidth: number, taskHeight: number) => void;
+    onMouseDown?: (event: MouseEvent<HTMLElement>, taskId: string, element: HTMLElement) => void;
     onMouseUp?: () => void;
 };
 
@@ -50,7 +50,7 @@ const Task = (props: Props) => {
 
         if(props.onMouseDown) {
             const element = taskElementRef.current! as HTMLElement;
-            props.onMouseDown(event, props.task.id, element, element.clientWidth, element.clientHeight);
+            props.onMouseDown(event, props.task.id, element);
         }
     }
 

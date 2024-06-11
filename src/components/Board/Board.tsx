@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { loadAllTasks, TaskActionsProps } from '../../actions';
 import { TaskState } from '../../reducers/state';
 import { AppDispatch, RootState } from '../../store';
-import { EntityStatus, TaskStatusIds, TaskStatusNameKeyMap } from '../../models';
+import { EntityStatus, TaskStatus, TaskStatusIds, TaskStatusNameKeyMap } from '../../models';
 import { Task } from '../../components';
 import './Board.less';
 
@@ -63,7 +63,7 @@ class Board extends React.Component<Props, State> {
         document.removeEventListener("mousemove", this._updateTaskPosition);
     }
 
-    _onTaskMouseDown = (event: React.MouseEvent<HTMLElement>, taskId: string, element: HTMLElement, taskWidth: number, taskHeight: number) => {
+    _onTaskMouseDown = (event: React.MouseEvent<HTMLElement>, taskId: string, element: HTMLElement) => {
         if(!this._boardElementRef) {
             return;
         }
@@ -84,8 +84,8 @@ class Board extends React.Component<Props, State> {
                 dragOffsetInsideTaskElementLeft: event.clientX - taskRect.left,
                 minTaskElementRelativeTop: 0,
                 minTaskElementRelativeLeft: 20,
-                maxTaskElementRelativeTop: parentRect.height - taskHeight - 20,
-                maxTaskElementRelativeLeft: parentRect.width - taskWidth - 20
+                maxTaskElementRelativeTop: parentRect.height - element.clientHeight - 20,
+                maxTaskElementRelativeLeft: parentRect.width - element.clientWidth - 20
             }
         });
 
@@ -156,10 +156,46 @@ class Board extends React.Component<Props, State> {
         this._stopTaskDragging();
     }
 
-    render() {
-        console.log(this.props)
-        const { t } = this.props;
+    _isTaskDragging = (taskId: string): boolean => {
+        const { dragProps } = this.state;
+        return dragProps.dragging && dragProps.draggableTaskId === taskId;
+    }
+
+    _renderTasks = (statusId: TaskStatus) => {
         const tasks = this.props.tasks.entities;
+
+        return tasks
+            .filter(task => task.statusId === statusId)
+            .map((task, _, __, dragging = this._isTaskDragging(task.id)) => 
+                [
+                    <Task 
+                        key={task.id} 
+                        task={task} 
+                        dragging={dragging}
+                        onMouseDown={this._onTaskMouseDown} 
+                        onMouseUp={this._onTaskMouseUp}
+                    />,
+                    dragging ? 
+                        this._renderTaskPlaceholder() : 
+                        null
+                ]
+            );
+    }
+
+    _renderTaskPlaceholder = () => {
+        return (
+            <div
+                key="task-placeholder" 
+                className="task-placeholder"
+                style={{
+                    height: `${this.state.dragProps.draggableElement?.clientHeight}px`
+                }}
+            />
+        );
+    }
+
+    render() {
+        const { t } = this.props;
 
         return (
             <table className="board">
@@ -182,19 +218,7 @@ class Board extends React.Component<Props, State> {
                             TaskStatusIds.map(statusId => (
                                 <td key={statusId}>
                                     <div className="board__column-content">
-                                        {
-                                            tasks
-                                                .filter(task => task.statusId === statusId)
-                                                .map((task, _, __, dragging = this.state.dragProps.dragging && this.state.dragProps.draggableTaskId === task.id) => 
-                                                    <Task 
-                                                        key={task.id} 
-                                                        task={task} 
-                                                        dragging={dragging}
-                                                        onMouseDown={this._onTaskMouseDown} 
-                                                        onMouseUp={this._onTaskMouseUp}
-                                                    />
-                                                )
-                                        }
+                                        { this._renderTasks(statusId) }
                                     </div>
                                 </td>
                             ))

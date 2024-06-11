@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, MouseEvent } from 'react';
 import { useTranslation } from "react-i18next";
 import { setLocale } from '../../utils/locale.helper';
 import { ILanguage, SupportedLanguages } from '../../models';
@@ -10,13 +10,13 @@ import { blue } from '@mui/material/colors';
 import './LanguageSelector.less';
 
 const LanguageSelector = () => {
-    const [menuAnchorEl, setMenuAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [menuAnchorEl, setMenuAnchorEl] = useState<null | HTMLElement>(null);
     const isMenuOpen = Boolean(menuAnchorEl);
 
     const [t, i18n] = useTranslation('common');
     const selectedLanguage = i18n.language;
 
-    const onMenuButtonClick = (event: React.MouseEvent<HTMLElement>) => {
+    const onMenuButtonClick = (event: MouseEvent<HTMLElement>) => {
         setMenuAnchorEl(event.currentTarget);
     };
 
